@@ -9,10 +9,7 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            var day = new Day1();
-            day.Run();
-            day.Run();
-            day.Run();
+            var day = new Day2();
             day.Run();
 
             Console.ReadLine();
