@@ -29,10 +29,10 @@ namespace AdventOfCode
 
             var totalIds = seats.Sum(c => c.Id);
 
-            // 53 + ... + 869
-            var correctSummation = (((double)1 + highestSeat) / 2 * highestSeat) - ((double)(lowestSeat) / 2 * (lowestSeat - 1));
+            // Using geometry to solve
+            var area = ((highestSeat + lowestSeat) * (highestSeat - lowestSeat + 1)) / 2;
 
-            var missingId =  correctSummation - totalIds;
+            var missingId =  area - totalIds;
             Console.WriteLine($"Missing Seat Id: {missingId}");
         }
 
