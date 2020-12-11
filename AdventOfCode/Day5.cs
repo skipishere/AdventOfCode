@@ -22,23 +22,18 @@ namespace AdventOfCode
                 seats.Add(new Seat(location));
             }
 
-            var orderedSeats = seats.OrderBy(c => c.Id);
-            Console.WriteLine(orderedSeats.Last().Id);
+            var highestSeat = seats.Max(c=> c.Id);
+            var lowestSeat = seats.Min(c => c.Id);
 
-            var missingId = new List<int>();
+            Console.WriteLine(highestSeat);
 
-            var previous = orderedSeats.First().Id;
-            for (int i = 1; i < orderedSeats.Count(); i++)
-            {
-                var next = orderedSeats.ElementAt(i);
-                if (next.Id != previous+1)
-                {
-                    Console.WriteLine($"Missing Seat Id: {previous + 1}");
-                }
+            var totalIds = seats.Sum(c => c.Id);
 
-                previous = next.Id;
-            }
+            // 53 + ... + 869
+            var correctSummation = (((double)1 + highestSeat) / 2 * highestSeat) - ((double)(lowestSeat) / 2 * (lowestSeat - 1));
 
+            var missingId =  correctSummation - totalIds;
+            Console.WriteLine($"Missing Seat Id: {missingId}");
         }
 
         private class Seat
