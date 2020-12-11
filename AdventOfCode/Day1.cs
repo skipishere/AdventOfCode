@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    internal sealed class Day1
+    internal sealed class Day1 : IDay
     {
         public void Run()
         {

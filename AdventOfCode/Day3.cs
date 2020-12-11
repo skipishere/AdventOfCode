@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    internal sealed class Day3
+    internal sealed class Day3 : IDay
     {
         const char Tree = '#';
                 

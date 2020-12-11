@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode
 {
-    internal sealed class Day2
+    internal sealed class Day2 : IDay
     {
         public void Run()
         {
