@@ -1,23 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCode2021
+﻿namespace AdventOfCode2021
 {
     internal class Day2 : Day
     {
         public override string Name => "day2";
 
+        private List<Tuple<string, int>> GetData()
+        {
+            var directions = new List<Tuple<string, int>>();
+            var rawDirections = InputString();
+
+            foreach (var rawDirection in rawDirections)
+            {
+                var clean = rawDirection.Split(' ');
+                directions.Add(new Tuple<string, int>(clean[0], int.Parse(clean[1])));
+            }
+
+            return directions;
+        }
+
         public override void FirstAnswer()
         {
-            throw new NotImplementedException();
+            var directions = GetData();
+            var depth = 0;
+            var horizontal = 0;
+
+
+            foreach(var direction in directions)
+            {
+                switch (direction.Item1)
+                {
+                    case "forward":
+                        horizontal+= direction.Item2;
+                        break;
+                    case "down":
+                        depth += direction.Item2;
+                        break;
+                    case "up":
+                        depth -= direction.Item2;
+                        break;
+                }
+            }
+
+            Console.WriteLine(depth*horizontal);
         }
 
         public override void SecondAnswer()
         {
-            throw new NotImplementedException();
+            var directions = GetData();
+            var depth = 0;
+            var horizontal = 0;
+            var aim = 0;
+
+            foreach (var direction in directions)
+            {
+                switch (direction.Item1)
+                {
+                    case "forward":
+                        horizontal += direction.Item2;
+                        depth += aim * direction.Item2;
+                        break;
+                    case "down":
+                        aim += direction.Item2;
+                        break;
+                    case "up":
+                        aim -= direction.Item2;
+                        break;
+                }
+            }
+
+            Console.WriteLine(depth * horizontal);
         }
     }
 }
