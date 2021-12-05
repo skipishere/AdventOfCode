@@ -8,8 +8,6 @@ namespace AdventOfCode2021
 
         public override string Name => "day5";
 
-        private List<int> _calledNumbers;
-
         private List<Line> _lines = new List<Line>();
 
         public Day5()
@@ -23,14 +21,15 @@ namespace AdventOfCode2021
             }
         }
 
-        
         public int CalculateDanger(bool includeDiagonal)
         {
-            var test = _lines.Where(c => c.Direction != Line.DirectionType.Diagonal);
+            var danger = _lines
+                .Where(c => c.Direction != (includeDiagonal ? Line.DirectionType.Unknown: Line.DirectionType.Diagonal))
+                .SelectMany(c=> c.GetCoords());
 
-            var danger = _lines.Where(c => c.Direction != Line.DirectionType.Diagonal).SelectMany(c=> c.GetCoords());
-
-            var mostDanger = danger.GroupBy(i => i.ToString()).Where(c => c.Count() > 1);
+            var mostDanger = danger
+                .GroupBy(i => i.ToString())
+                .Where(c => c.Count() > 1);
 
             return mostDanger.Count();
         }
@@ -52,9 +51,7 @@ namespace AdventOfCode2021
 
             public int Y { get; set; }
 
-            public Coords(string[] input) : this(int.Parse(input[0]), int.Parse(input[1]))
-            {
-            }
+            public Coords(string[] input) : this(int.Parse(input[0]), int.Parse(input[1])) { }
 
             public Coords(int x, int y)
             {
@@ -87,9 +84,10 @@ namespace AdventOfCode2021
         {
             public enum DirectionType
             {
-                Horizontal = 0,
-                Vertical = 1,
-                Diagonal = 2
+                Unknown,
+                Horizontal,
+                Vertical,
+                Diagonal
             }
 
             public Coords Start { get; set; }
@@ -142,6 +140,15 @@ namespace AdventOfCode2021
                         break;
 
                     case DirectionType.Diagonal:
+                        var stepDiff = Math.Abs(Start.X - End.X);
+
+                        var yDiagStep = (Start.Y > End.Y) ? -1 : 1;
+                        var xDiagStep = (Start.X > End.X) ? -1 : 1;
+
+                        for (int i = 0; i <= stepDiff; i++)
+                        {
+                            coords.Add(new Coords(Start.X + (i * xDiagStep), Start.Y + (i * yDiagStep)));
+                        }
                         break;
                 }
 
