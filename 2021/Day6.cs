@@ -8,15 +8,13 @@ namespace AdventOfCode2021
 
         public override string Name => "day6";
 
-        private List<int> _fish = new List<int>();
-        private List<Fish> _school = new List<Fish>();
+        private IList<Fish> _initialSchool = new List<Fish>();
 
         public Day6()
         {
-            var input = this.InputString();
-            _fish = input.First().Split(',').Select(c => int.Parse(c)).ToList();
+            var input = this.InputString().First().Split(',').Select(c => int.Parse(c));
 
-            _school = _fish.GroupBy(c => c).Select(f => new Fish { Age = f.Key, Number = f.Count() }).ToList();
+            _initialSchool = input.GroupBy(c => c).Select(f => new Fish { Age = f.Key, Number = f.Count() }).ToList();
         }
 
         public long CalculateFish(int days)
@@ -24,15 +22,15 @@ namespace AdventOfCode2021
             for (int i = 0; i < days; i++)
             {
                 long newFish = 0;
-                foreach (var item in _school)
+                foreach (var item in _initialSchool)
                 {
-                    newFish+= item.Decrement();
+                    newFish += item.Decrement();
                 }
 
-                _school.Add(new Fish { Age = 8, Number = newFish });
+                _initialSchool.Add(new Fish { Age = 8, Number = newFish });
             }
 
-            return _school.Sum(c => c.Number);
+            return _initialSchool.Sum(c => c.Number);
         }
 
         public override void FirstAnswer()
