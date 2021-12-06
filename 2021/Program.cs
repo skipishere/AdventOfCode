@@ -11,7 +11,7 @@ namespace AdventOfCode2021
         static void Main(string[] args)
         {
             // TODO take the day as input, or better yet redo this section...
-            Day day = new Day5();
+            Day day = new Day6();
 
             Console.WriteLine($"{ day.Name} Part One");
             day.FirstAnswer();
