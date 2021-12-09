@@ -10,14 +10,28 @@ namespace AdventOfCode2021
     {
         static void Main(string[] args)
         {
-            // TODO take the day as input, or better yet redo this section...
-            Day day = new Day9();
+            Console.WriteLine($"Please enter in the day you wish to run, or leave blank for today ({DateTime.Now.Day})");
+            
+            var input = Console.ReadLine();
+            if (!int.TryParse(input, out int result))
+            {
+                result = DateTime.Now.Day;
+            }
 
-            Console.WriteLine($"{ day.Name} Part One");
-            day.FirstAnswer();
+            var day = Type.GetType($"AdventOfCode2021.Day{result}");
 
-            Console.WriteLine($"{ day.Name} Part Two");
-            day.SecondAnswer();
+            if (day != null && Activator.CreateInstance(day) is Day makeMyDay)
+            {
+                Console.WriteLine($"{makeMyDay.Name} Part One");
+                makeMyDay.FirstAnswer();
+
+                Console.WriteLine($"{makeMyDay.Name} Part Two");
+                makeMyDay.SecondAnswer();
+            }
+            else 
+            {
+                Console.WriteLine($"There is no current solution for Day {result}");
+            }
 
             Console.ReadLine();
         }
