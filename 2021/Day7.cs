@@ -2,10 +2,9 @@
 {
     internal class Day7 : Day
     {
+        public override string Name => "Day 7: The Treachery of Whales";
 
-        public override string Name => "day7";
-
-        private IEnumerable<int> _crabPosition = new List<int>();
+        private readonly IEnumerable<int> _crabPosition = new List<int>();
 
         public Day7()
         {
@@ -20,8 +19,7 @@
             {
                 var fuelSpent = _crabPosition.Sum(c =>
                 {
-                    var movement = 0;
-                    movement = (c > i) ? c - i : i - c;
+                    var movement = (c > i) ? c - i : i - c;
                     
                     if (triangular)
                     {

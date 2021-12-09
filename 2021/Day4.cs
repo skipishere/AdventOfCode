@@ -1,16 +1,12 @@
-﻿using System.Linq;
-using System.Text;
-
-namespace AdventOfCode2021
+﻿namespace AdventOfCode2021
 {
     internal class Day4 : Day
     {
+        public override string Name => "Day 4: Giant Squid";
 
-        public override string Name => "day4";
+        private readonly List<int> _calledNumbers;
 
-        private List<int> _calledNumbers;
-
-        private List<Board> _boards = new List<Board>();
+        private readonly List<Board> _boards = new();
 
         public Day4()
         {

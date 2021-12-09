@@ -2,14 +2,12 @@
 {
     internal class Day9 : Day
     {
-
-        public override string Name => "day9";
+        public override string Name => "Day 9: Smoke Basin";
 
         private readonly int[] _heightMap;
         private readonly int _length;
         private readonly int _height;
-
-        private readonly List<int> _lowPoint = new List<int>();
+        private readonly List<int> _lowPoint = new();
 
         public Day9()
         {

@@ -2,8 +2,7 @@
 {
     internal class Day8 : Day
     {
-
-        public override string Name => "day8";
+        public override string Name => "Day 8: Seven Segment Search";
 
         private IEnumerable<Display> _display = new List<Display>();
 

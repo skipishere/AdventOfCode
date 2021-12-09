@@ -1,14 +1,10 @@
-﻿using System.Linq;
-using System.Text;
-
-namespace AdventOfCode2021
+﻿namespace AdventOfCode2021
 {
     internal class Day5 : Day
     {
+        public override string Name => "Day 5: Hydrothermal Venture";
 
-        public override string Name => "day5";
-
-        private List<Line> _lines = new List<Line>();
+        private readonly List<Line> _lines = new();
 
         public Day5()
         {

@@ -2,9 +2,7 @@
 {
     internal class Day1 : Day
     {
-        
-        public override string Name => "day1";
-
+        public override string Name => "Day 1: Sonar Sweep";
 
         public override void FirstAnswer()
         {
@@ -32,7 +30,7 @@
             var depthIncreases = -1;
             var previousWindow = 0;
             
-            for (int i = 0; i < depths.Count() - 2; i++)
+            for (int i = 0; i < depths.Length - 2; i++)
             {
                 var currentWindow = depths[i] + depths[i+1] + depths[i+2];
                 if (currentWindow > previousWindow)

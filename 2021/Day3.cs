@@ -4,7 +4,7 @@ namespace AdventOfCode2021
 {
     internal class Day3 : Day
     {
-        public override string Name => "day3";
+        public override string Name => "Day 3: Binary Diagnostic";
 
         private IEnumerable<IEnumerable<char>> GetData()
         {

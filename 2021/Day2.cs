@@ -2,7 +2,7 @@
 {
     internal class Day2 : Day
     {
-        public override string Name => "day2";
+        public override string Name => "Day 2: Dive!";
 
         private List<Tuple<string, int>> GetData()
         {

@@ -1,12 +1,8 @@
-﻿using System.Linq;
-using System.Text;
-
-namespace AdventOfCode2021
+﻿namespace AdventOfCode2021
 {
     internal class Day6 : Day
     {
-
-        public override string Name => "day6";
+        public override string Name => "Day 6: Lanternfish";
 
         private IList<Fish> _initialSchool = new List<Fish>();
 
