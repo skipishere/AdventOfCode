@@ -47,8 +47,7 @@
                 {
                     long incomplete = 0;
                     // Incomplete, time to work out the ending...
-                    // (1848260786 too low...)
-                
+                    
                     foreach (var unclosed in bracket)
                     {
                         CloseBracket(unclosed, ref incomplete);
