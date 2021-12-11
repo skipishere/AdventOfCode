@@ -20,13 +20,7 @@
                 var fuelSpent = _crabPosition.Sum(c =>
                 {
                     var movement = (c > i) ? c - i : i - c;
-                    
-                    if (triangular)
-                    {
-                        return movement * (movement + 1) / 2;
-                    }
-
-                    return movement;
+                    return triangular ? movement * (movement + 1) / 2 : movement;
                 });
 
                 answer.Add(i, fuelSpent);
@@ -39,7 +33,6 @@
         {
             Console.WriteLine(CalculateFuel(false));
         }
-
 
         public override void SecondAnswer()
         {

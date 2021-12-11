@@ -34,7 +34,6 @@
             Console.WriteLine(CalculateFish(80));
         }
 
-
         public override void SecondAnswer()
         {
             // We haven't reset, so don't just dump in 256 :facepalm:

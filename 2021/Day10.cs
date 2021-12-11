@@ -27,35 +27,25 @@
                     {
                         bracket.Push(character);
                     }
-                    else
+                    else if (!IsPair(character, bracket.Pop(), out var newScore))
                     {
-                        if (IsPair(character, bracket.Peek(), out var newScore))
-                        {
-                            bracket.Pop();
-                        }
-                        else
-                        {
-                            // hit the error, score and move to next line.
-                            corruptScore += newScore;
-                            isCorrupt = true;
-                            break;
-                        }
+                        // hit the error, score and move to next line.
+                        corruptScore += newScore;
+                        isCorrupt = true;
+                        break;
                     }
                 }
 
                 if (!isCorrupt)
                 {
-                    long incomplete = 0;
                     // Incomplete, time to work out the ending...
+                    long incomplete = 0;
                     
                     foreach (var unclosed in bracket)
                     {
                         CloseBracket(unclosed, ref incomplete);
-                        Console.Write(unclosed);
                     }
                 
-                    Console.WriteLine(incomplete);
-
                     incompleteScores.Add(incomplete);
                 }
             }
@@ -97,25 +87,14 @@
 
         private void CloseBracket(char input, ref long score)
         {
-            var localScore = 0;
-            switch (input)
+            var localScore = input switch
             {
-                case '(':
-                    localScore = 1;
-                    break;
-                case '[':
-                    localScore = 2;
-                    break;
-                case '{':
-                    localScore = 3;
-                    break;
-                case '<':
-                    localScore = 4;
-                    break;
-                default:
-                    throw new Exception($"Invalid character {input}");
-            }
-
+                '(' => 1,
+                '[' => 2,
+                '{' => 3,
+                '<' => 4,
+                _ => throw new Exception($"Invalid character {input}"),
+            };
             score = score * 5 + localScore;
         }
 
