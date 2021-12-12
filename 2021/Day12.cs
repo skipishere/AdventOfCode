@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2021
+﻿using System.Collections.Concurrent;
+
+namespace AdventOfCode2021
 {
     internal class Day12 : Day
     {
@@ -6,8 +8,8 @@
 
         private readonly Dictionary<string, List<string>> _paths = new();
 
-        private readonly List<Route> _routes = new();
-
+        private readonly ConcurrentBag<Route> _routes = new();
+        
         public Day12()
         {
             foreach (var line in this.InputString())
@@ -39,8 +41,12 @@
         private int CalculatePath(bool canVisitASmallCaveTwice)
         {
             _routes.Clear();
-            Visit("start", new Route(), canVisitASmallCaveTwice);
 
+            Parallel.ForEach(_paths["start"], cave =>
+            {
+                Visit(cave, new Route(new List<string> { "start" }), canVisitASmallCaveTwice);
+            });
+            
             return _routes.Count;
         }
 
