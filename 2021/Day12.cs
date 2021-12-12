@@ -10,9 +10,7 @@
 
         public Day12()
         {
-            var input = this.InputString();
-
-            foreach (var line in input)
+            foreach (var line in this.InputString())
             {
                 var rooms = line.Split('-');
 
@@ -22,6 +20,11 @@
 
             void AddPaths(string room1, string room2)
             {
+                if (room2 == "start")
+                {
+                    return;
+                }
+
                 if (_paths.TryGetValue(room1, out var connection))
                 {
                     connection.Add(room2);
@@ -33,11 +36,12 @@
             }
         }
 
-        public int CalculatePath(bool canVisitASmallCaveTwice)
-        {            
+        private int CalculatePath(bool canVisitASmallCaveTwice)
+        {
+            _routes.Clear();
             Visit("start", new Route(), canVisitASmallCaveTwice);
 
-            return _routes.Count(c => c.ReachedEnd);
+            return _routes.Count;
         }
 
         private void Visit(string startCave, Route route, bool canVisitASmallCaveTwice)
@@ -50,20 +54,12 @@
                 return;
             }
 
-            foreach (var cave in _paths[startCave].Where(c => c != "start"))
+            foreach (var cave in _paths[startCave].Where(cave => !IsSmallCave(cave)
+                                   || !route.Caves.Contains(cave)
+                                   || canVisitASmallCaveTwice && !route.HaveVisitedSmallCaveTwice))
             {
                 var myRoute = new Route(route.Caves);
-                if (IsSmallCave(cave)
-                    && myRoute.Caves.Contains(cave)
-                    && (!canVisitASmallCaveTwice || myRoute.HaveVisitedSmallCaveTwice))
-                {
-                    // We've already been in this small cave (or twice in another small cave for part 2), abort.
-                    _routes.Add(myRoute);
-                }
-                else
-                {
-                    Visit(cave, myRoute, canVisitASmallCaveTwice);
-                }
+                Visit(cave, myRoute, canVisitASmallCaveTwice);
             }
         }
 
@@ -79,30 +75,20 @@
 
         public override void SecondAnswer()
         {
-            _routes.Clear();
             Console.WriteLine(CalculatePath(true));
         }
 
         private class Route
         {
-            public List<string> Caves { get; set; } = new List<string>();
+            public List<string> Caves { get; set; }
 
-            public bool ReachedEnd { get { return Caves.Last() == "end"; } }
-
-            public bool HaveVisitedSmallCaveTwice
-            {
-                get
-                {
-                    return Caves.Where(c => IsSmallCave(c)).GroupBy(c => c).Max(d => d.Count()) > 1;
-                }
-            }
+            public bool HaveVisitedSmallCaveTwice => Caves.Where(c => IsSmallCave(c))
+                                                          .GroupBy(c => c)
+                                                          .Max(d => d.Count()) > 1;
 
             public Route(List<string>? caves = null)
             {
-                if (caves != null)
-                {
-                    this.Caves = new List<string>(caves);
-                }
+                Caves = caves == null ? new() : new List<string>(caves);
             }
         }
     }
