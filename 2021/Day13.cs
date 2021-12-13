@@ -76,13 +76,13 @@ namespace AdventOfCode2021
                 {
                     if (localDots.Distinct().Contains(new CoOrds { X = x, Y = y }))
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write('#');
+                        Console.ForegroundColor = y %2 == x%2 ? ConsoleColor.Red : ConsoleColor.White;
+                        Console.Write('▒');
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write('.');
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write('·');
                     }
                 }
 
