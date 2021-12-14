@@ -71,6 +71,7 @@
         public static void CreateAndIncrease<TKey>(this Dictionary<TKey, long> dictionary,
             TKey key,
             long value)
+            where TKey : notnull
         {
             if (dictionary.ContainsKey(key))
             {
