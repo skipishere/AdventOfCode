@@ -16,8 +16,6 @@ namespace AdventOfCode2021
             {
                 if (line.StartsWith("fold"))
                 {
-                    // add fold
-
                     var match = Regex.Match(line, @"fold along (?<type>\w)=(?<value>\d*)");
                     var value = int.Parse(match.Groups["value"].Value);
                     if ("x".Equals(match.Groups["type"].Value))
@@ -35,7 +33,6 @@ namespace AdventOfCode2021
                     _dots.Add(new CoOrds { X = int.Parse(splitCoords[0]), Y = int.Parse(splitCoords[1]) });
                 }
             }
-
         }
 
         public void Fold(int folds)
@@ -60,9 +57,7 @@ namespace AdventOfCode2021
                         dot.Y = foldLine.Y - diff;
                     }
                 }
-
             }
-            
 
             if (folds == 1)
             {
@@ -101,7 +96,6 @@ namespace AdventOfCode2021
         {
             Fold(_folds.Count);
         }
-
 
         private record class CoOrds
         {
