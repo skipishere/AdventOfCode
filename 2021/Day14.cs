@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
-
-namespace AdventOfCode2021
+﻿namespace AdventOfCode2021
 {
     internal class Day14 : Day
     {
