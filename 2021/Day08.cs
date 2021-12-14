@@ -1,12 +1,12 @@
 ﻿namespace AdventOfCode2021
 {
-    internal class Day8 : Day
+    internal class Day08 : Day
     {
         public override string Name => "Day 8: Seven Segment Search";
 
         private IEnumerable<Display> _display = new List<Display>();
 
-        public Day8()
+        public Day08()
         {
             _display = this.InputString().Select(c => { return new Display(c); });
         }

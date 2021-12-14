@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode2021
 {
-    internal class Day9 : Day
+    internal class Day09 : Day
     {
         public override string Name => "Day 9: Smoke Basin";
 
@@ -9,7 +9,7 @@
         private readonly int _height;
         private readonly List<int> _lowPoint = new();
 
-        public Day9()
+        public Day09()
         {
             var input = this.InputString();
 

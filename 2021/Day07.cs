@@ -1,12 +1,12 @@
 ﻿namespace AdventOfCode2021
 {
-    internal class Day7 : Day
+    internal class Day07 : Day
     {
         public override string Name => "Day 7: The Treachery of Whales";
 
         private readonly IEnumerable<int> _crabPosition = new List<int>();
 
-        public Day7()
+        public Day07()
         {
             _crabPosition = this.InputString().First().Split(',').Select(c => int.Parse(c));
         }

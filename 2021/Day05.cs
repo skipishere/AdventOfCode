@@ -1,12 +1,12 @@
 ﻿namespace AdventOfCode2021
 {
-    internal class Day5 : Day
+    internal class Day05 : Day
     {
         public override string Name => "Day 5: Hydrothermal Venture";
 
         private readonly List<Line> _lines = new();
 
-        public Day5()
+        public Day05()
         {
             var input = this.InputString();
 

@@ -18,7 +18,7 @@ namespace AdventOfCode2021
                 result = DateTime.Now.Day;
             }
 
-            var day = Type.GetType($"AdventOfCode2021.Day{result}");
+            var day = Type.GetType($"AdventOfCode2021.Day{result:D2}");
 
             if (day != null && Activator.CreateInstance(day) is Day makeMyDay)
             {
