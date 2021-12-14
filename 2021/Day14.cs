@@ -7,14 +7,22 @@ namespace AdventOfCode2021
     {
         public override string Name => "Day 14: Extended Polymerization";
 
-        private readonly string _template;
+        private readonly char _lastCharacter;
+        private readonly Dictionary<string, long> _template = new();
         private readonly Dictionary<string, string> _insertionPair = new();
-        
+
         public Day14()
         {
             var input = this.InputString();
-            _template = input.First();
+            var template = input.First();
 
+            for (int element = 0; element < template.Length - 1; element++)
+            {
+                _template.CreateAndIncrease($"{template[element]}{template[element + 1]}", 1);
+            }
+            
+            _lastCharacter = template.Last();
+            
             foreach (var line in input.Skip(2))
             {
                 var data = line.Split(" -> ");
@@ -22,48 +30,59 @@ namespace AdventOfCode2021
             }
         }
 
-        public void GrowPolymer(int steps)
+        public long GrowPolymer(int steps)
         {
-            var stage = new List<string> { _template };
+            var template = new Dictionary<string, long> (_template);
 
             for (var step = 0; step < steps; step++)
             {
-                var baseTemplate = stage.Last();
-                var builder = new StringBuilder();
-
-                for (var character = 0; character < baseTemplate.Length-1; character++)
+                var output = new Dictionary<string, long>();
+                foreach (var element in template)
                 {
-                    builder.Append(baseTemplate[character]);
-                    
-                    var insertion = _insertionPair[$"{baseTemplate[character]}{baseTemplate[character + 1]}"];
-                    builder.Append(insertion);
+                    output.CreateAndIncrease(element.Key.First() + _insertionPair[element.Key], element.Value);
+                    output.CreateAndIncrease(_insertionPair[element.Key] + element.Key.Last(), element.Value);
                 }
-                
-                builder.Append(baseTemplate.Last());
-                stage.Add(builder.ToString());
 
-                Console.WriteLine(stage.Last());
+                template = new Dictionary<string, long>(output);
             }
 
-            if (steps == 10)
+            var letters = new Dictionary<char, long>();
+            foreach (var element in template)
             {
-                var group = stage.Last().Distinct()
-                    .ToDictionary(letter => letter, letter => stage.Last().Count(character => character == letter));
-                var mostCommon = group.Max(c => c.Value);
-                var leastCommon = group.Min(c => c.Value);
-                Console.WriteLine($"Most common - least common = { mostCommon - leastCommon }");
-                return;
+                letters.CreateAndIncrease(element.Key.First(), element.Value);
             }
+
+            // As the last character won't be added using the above...
+            letters[_lastCharacter] += 1;
+
+            return letters.Max(c => c.Value) - letters.Min(c => c.Value);
         }
 
         public override void FirstAnswer()
         {
-            GrowPolymer(10);
+            Console.WriteLine(GrowPolymer(10));
         }
 
         public override void SecondAnswer()
         {
-            //GrowPolymer(100);
+            Console.WriteLine(GrowPolymer(40));
+        }
+    }
+
+    public static class Extension
+    {
+        public static void CreateAndIncrease<TKey>(this Dictionary<TKey, long> dictionary,
+            TKey key,
+            long value)
+        {
+            if (dictionary.ContainsKey(key))
+            {
+                dictionary[key] += value;
+            }
+            else
+            {
+                dictionary.Add(key, value);
+            }
         }
     }
 }
