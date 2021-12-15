@@ -6,10 +6,10 @@
 
         private int Navigate(int[] map, int mapWidth)
         {
-            var paths = new Dictionary<int, int> { { 0, 0 } };
+            var paths = new Dictionary<int, int>(map.Length - 1) { { 0, 0 } };
 
-            var queue = new Queue<Tuple<int,int>>();
-            queue.Enqueue(new Tuple<int,int>(0, 0));
+            var queue = new PriorityQueue<Tuple<int,int>, int>();
+            queue.Enqueue(new Tuple<int,int>(0, 0), 1);
 
             var newBranch = new Action<int, int>((newPosition, risk) =>
             {
@@ -20,13 +20,13 @@
                     if (paths[newPosition] > newRisk)
                     {
                         paths[newPosition] = newRisk;
-                        queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]));
+                        queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]), newRisk);
                     }
                 }
                 else
                 {
                     paths.Add(newPosition, newRisk);
-                    queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]));
+                    queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]), newRisk);
                 }
             });
 
@@ -38,7 +38,7 @@
                 var risk = location.Item2;
 
                 var (_, col) = Math.DivRem(postition, mapWidth);
-
+                
                 if (col + 1 < mapWidth)
                 {
                     // move right
