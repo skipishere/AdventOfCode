@@ -6,12 +6,30 @@
 
         private int Navigate(int[] map, int mapWidth)
         {
-            var paths = new Dictionary<int, int>();
-            paths.Add(0, 0);
-                        
+            var paths = new Dictionary<int, int> { { 0, 0 } };
+
             var queue = new Queue<Tuple<int,int>>();
             queue.Enqueue(new Tuple<int,int>(0, 0));
-            
+
+            var newBranch = new Action<int, int>((newPosition, risk) =>
+            {
+                var newRisk = risk + map[newPosition];
+
+                if (paths.ContainsKey(newPosition))
+                {
+                    if (paths[newPosition] > newRisk)
+                    {
+                        paths[newPosition] = newRisk;
+                        queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]));
+                    }
+                }
+                else
+                {
+                    paths.Add(newPosition, newRisk);
+                    queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]));
+                }
+            });
+
             while (queue.Count > 0)
             {
                 var location = queue.Dequeue();
@@ -19,49 +37,30 @@
                 var postition = location.Item1;
                 var risk = location.Item2;
 
-                var (row, col) = Math.DivRem(postition, mapWidth);
-
-                var newBranch = new Action<int> (newPosition => 
-                {
-                    var newRisk = risk + map[newPosition];
-
-                    if (paths.ContainsKey(newPosition))
-                    {
-                        if (paths[newPosition] > newRisk)
-                        {
-                            paths[newPosition] = newRisk;
-                            queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]));
-                        }
-                    }
-                    else
-                    {
-                        paths.Add(newPosition, newRisk);
-                        queue.Enqueue(new Tuple<int, int>(newPosition, risk + map[newPosition]));
-                    }
-                });
+                var (_, col) = Math.DivRem(postition, mapWidth);
 
                 if (col + 1 < mapWidth)
                 {
                     // move right
-                    newBranch(postition + 1);
+                    newBranch(postition + 1, risk);
                 }
 
                 if (col > 0)
                 {
-                    // Move Left
-                    newBranch(postition - 1);
+                    // Move left
+                    newBranch(postition - 1, risk);
                 }
 
                 if (postition - mapWidth > 0)
                 {
                     // Move up
-                    newBranch(postition - mapWidth);
+                    newBranch(postition - mapWidth, risk);
                 }
 
                 if (postition + mapWidth < map.Length)
                 {
                     // Move down
-                    newBranch(postition + mapWidth);
+                    newBranch(postition + mapWidth, risk);
                 };
             }
 
