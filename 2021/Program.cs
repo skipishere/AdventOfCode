@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2021
+﻿using System.Diagnostics;
+
+namespace AdventOfCode2021
 {
     class Program
     {
@@ -16,11 +18,19 @@
 
             if (day != null && Activator.CreateInstance(day) is Day makeMyDay)
             {
-                Console.WriteLine($"{makeMyDay.Name} Part One");
-                makeMyDay.FirstAnswer();
+                var runWithTimer = new Action<Delegate, string>((puzzle, partNumber) => 
+                {
+                    var timer = new Stopwatch();
+                    Console.WriteLine($"{makeMyDay.Name} Part {partNumber}");
+                    timer.Start();
+                    puzzle.DynamicInvoke();
+                    timer.Stop();
+                    Console.WriteLine(@$"Time to solve: {timer.Elapsed:g}");
+                    Console.WriteLine();
+                });
 
-                Console.WriteLine($"{makeMyDay.Name} Part Two");
-                makeMyDay.SecondAnswer();
+                runWithTimer(() => makeMyDay.FirstAnswer(), "One");                
+                runWithTimer(() => makeMyDay.SecondAnswer(), "Two");
             }
             else 
             {
