@@ -79,10 +79,45 @@
         public override void SecondAnswer()
         {
             var input = this.InputString();
-            var map = input.SelectMany(c => c.ToCharArray()).Select(d => int.Parse(d.ToString())).ToArray();
 
-            var mapWidth = input.First().Length;
+            var expandedMap = new List<int[]>();
+            foreach (var line in input)
+            {
+                var initial = line.ToCharArray().Select(d => int.Parse(d.ToString())).ToList();
+                var expandedLine = new List<int>(initial);
+                for (int i = 0; i < 4; i++)
+                {
+                    foreach (var item in initial)
+                    {
+                        var newRisk = (item + i) % 9 + 1;
+                        expandedLine.Add(newRisk);
+                    }
+                }
+
+                expandedMap.Add(expandedLine.ToArray());
+            }
+
+            var moreMap = new List<int[]>();
+            for (int i = 0; i < 4; i++)
+            {
+                foreach (var line in expandedMap)
+                {
+                    var expandedLine = new List<int>();
+                    foreach (var item in line)
+                    {
+                        var newRisk = (item + i) % 9 + 1;
+                        expandedLine.Add(newRisk);
+                    }
+
+                    moreMap.Add(expandedLine.ToArray());
+                }
+            }
             
+            expandedMap.AddRange(moreMap);
+
+            var map = expandedMap.SelectMany(c => c).ToArray();
+            var mapWidth = input.First().Length * 5;
+
             Console.WriteLine(Navigate(map, mapWidth));
         }
     }
