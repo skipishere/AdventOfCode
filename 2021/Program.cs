@@ -36,8 +36,6 @@ namespace AdventOfCode2021
             {
                 Console.WriteLine($"There is no current solution for Day {result}");
             }
-
-            Console.ReadLine();
         }
     }
 }
