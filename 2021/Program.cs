@@ -26,6 +26,7 @@ namespace AdventOfCode2021
                     puzzle.DynamicInvoke();
                     timer.Stop();
                     Console.WriteLine(@$"Time to solve: {timer.Elapsed:g}");
+                    Console.WriteLine(@$"Time to solve: {timer.ElapsedMilliseconds}ms");
                     Console.WriteLine();
                 });
 
