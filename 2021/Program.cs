@@ -30,8 +30,15 @@ namespace AdventOfCode2021
                     Console.WriteLine();
                 });
 
+
+                var overall = new Stopwatch();
+                overall.Start();
                 runWithTimer(() => makeMyDay.FirstAnswer(), "One");                
                 runWithTimer(() => makeMyDay.SecondAnswer(), "Two");
+                overall.Stop();
+
+                Console.WriteLine(@$"Overall time to solve: {overall.Elapsed:g}");
+                Console.WriteLine(@$"Overall time to solve: {overall.ElapsedMilliseconds}ms");
             }
             else 
             {
