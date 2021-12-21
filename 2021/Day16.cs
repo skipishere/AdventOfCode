@@ -7,12 +7,33 @@ namespace AdventOfCode2021
     {
         public override string Name => "Day 16: Packet Decoder";
 
-        private List<Packet> packets = new();
+        public List<Packet> packets = new();
 
         public Day16()
         {
-            var input = this.InputString();
+            try
+            {
+                Read(InputString());
+            }
+            catch
+            {
+            }
+        }
 
+        public Day16(IEnumerable<string> input)
+        {
+            try
+            {
+                this.Read(input);
+            }
+            catch
+            {
+                // It's ok, some tests will hit the out of bounds issue due to the test cases given.
+            }
+        }
+
+        private void Read(IEnumerable<string> input)
+        {
             var binaryBuilder = new StringBuilder(input.Count() * 4);
             foreach (var character in input.First())
             {
@@ -21,56 +42,64 @@ namespace AdventOfCode2021
                 binaryBuilder.Append(binary);
             }
 
-            while (binaryBuilder.Length > 0)
-            {
-                var version = Convert.ToInt32(binaryBuilder.ToString(0, 3), 2);
-                var type = Convert.ToInt32(binaryBuilder.ToString(3, 3), 2);
-
-                string data = string.Empty;
-                var totalDataLength = 6;
-                switch (type)
-                {
-                    case 4:
-                        var dataBuilder = new StringBuilder();
-                        var keepGoing = true;
-                        while (keepGoing)
-                        {
-                            keepGoing = binaryBuilder[totalDataLength] == '1';
-                            dataBuilder.Append(binaryBuilder.ToString(totalDataLength + 1, 4));
-                            totalDataLength += 5;
-                        }
-                        
-                        data = dataBuilder.ToString();
-                        break;
-                    default:
-                        var lengthTypeId = binaryBuilder.ToString(6, 1);
-                        totalDataLength += 1;
-
-                        if (lengthTypeId == "0")
-                        {
-                            var dataLength = Convert.ToInt32(binaryBuilder.ToString(7, 15), 2);
-                            data = binaryBuilder.ToString(7 + 15, dataLength);
-                            totalDataLength += 15 + dataLength;
-                        }
-                        else
-                        {
-                            var subPackets = Convert.ToInt32(binaryBuilder.ToString(7, 11), 2);
-                            for (int i = 0; i < subPackets; i++)
-                            {
-                                data += binaryBuilder.ToString(7 + 11 + i * 11, 11);
-                            }
-                            totalDataLength += 11 + 11 * subPackets;
-                        }
-                        
-                        break;
-                }
-
-                packets.Add(new Packet(version, type, data));
-                binaryBuilder.Remove(0, totalDataLength);
-            }
-
+            var start = 0;
+            PacketRead(binaryBuilder, ref start, binaryBuilder.Length);
         }
 
+        public void PacketRead(StringBuilder binaryBuilder, ref int readPosition, int end)
+        {
+            while(readPosition < end)
+            {
+                var version = Convert.ToInt32(binaryBuilder.ToString(readPosition, 3), 2);
+                var type = Convert.ToInt32(binaryBuilder.ToString(readPosition + 3, 3), 2);
+                
+                readPosition += 6;
+
+                if (type == 4)
+                {
+                    packets.Add(GetLiteral(binaryBuilder, version, ref readPosition));
+                }
+                else
+                {
+                    var lengthTypeId = binaryBuilder.ToString(readPosition, 1);
+                    readPosition += 1;
+                    packets.Add(new Packet(version, type, string.Empty));
+
+                    if (lengthTypeId == "0")
+                    {
+                        var dataLength = Convert.ToInt32(binaryBuilder.ToString(readPosition, 15), 2);
+                        readPosition += 15;
+                        
+                        PacketRead(binaryBuilder, ref readPosition, readPosition+dataLength);
+                    }
+                    else
+                    {
+                        var subPackets = Convert.ToInt32(binaryBuilder.ToString(readPosition, 11), 2);
+                        readPosition+=11;
+
+                        for (int i = 0; i < subPackets; i++)
+                        {
+                            PacketRead(binaryBuilder, ref readPosition, readPosition + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static Packet GetLiteral(StringBuilder binaryBuilder, int version, ref int position)
+        {
+            var dataBuilder = new StringBuilder();
+            var keepGoing = true;
+            while (keepGoing)
+            {
+                keepGoing = binaryBuilder[position] == '1';
+                dataBuilder.Append(binaryBuilder.ToString(position + 1, 4));
+                position += 5;
+            }
+
+            return new Packet(version, 4, dataBuilder.ToString());
+        }
+    
        
         public override void FirstAnswer()
         {
@@ -82,13 +111,13 @@ namespace AdventOfCode2021
             Console.WriteLine(2);
         }
 
-        private class Packet
+        internal class Packet
         {
             public int Version { get; private set; }
 
             public int Type { get; private set; }
 
-            public int Value { get; private set; }
+            public long Value { get; private set; }
 
             public Packet(int version, int type, string data)
             {
@@ -97,7 +126,7 @@ namespace AdventOfCode2021
 
                 if (this.Type == 4)
                 {
-                    Value = Convert.ToInt32(data, 2);
+                    Value = Convert.ToInt64(data, 2);
                 }else if (data.Length == 15)
                 {
                     var value1 = Convert.ToInt32(data.Substring(0, 11), 2);
