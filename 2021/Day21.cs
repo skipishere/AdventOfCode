@@ -74,6 +74,81 @@ namespace AdventOfCode2021
             return _100dice;
         }
 
+        private void QuantumGame()
+        {
+            var gameQueue = new PriorityQueue<Game, long>();
+            var inProgress = new Dictionary<Game, long>();
+            var finishedGames = new List<Game>();
+
+            var seedGame = new Game(position: new int[] { _playerOneStart, _playerTwoStart }, score: new int[] { 0, 0 }, copies: 0) { PlayerTurn = 0 };
+            gameQueue.Enqueue(seedGame, 1);
+            inProgress.Add(seedGame, 1);
+
+            var checkAndAdd = new Action<Game, int, long>((game, newSplits, copies) => 
+            {
+                if (game.Score[0] >= 21 || game.Score[1] >= 21)
+                {
+                    // game over
+                    game.Copies = newSplits * copies;
+                    finishedGames.Add(game);
+
+                    return;
+                }
+
+                if (inProgress.ContainsKey(game))
+                {
+                    inProgress[game] += newSplits * copies;
+                }
+                else
+                {
+                    inProgress.Add(game, newSplits * copies);
+                    gameQueue.Enqueue(game, game.Score[0]);
+                }
+            });
+
+            while (gameQueue.Count > 0)
+            {
+                var game = gameQueue.Dequeue();
+
+                if (!inProgress.ContainsKey(game))
+                {
+                    // we've already done this one.
+                    continue;
+                }
+
+                var count = inProgress[game];
+                inProgress.Remove(game);
+
+                // Dice end up with game split with total dice score
+                // 1 x 3r
+                checkAndAdd(new Game(game, 3), 1, count);
+
+                // 3 x 4r
+                checkAndAdd(new Game(game, 4), 3, count);
+
+                // 6 x 5r
+                checkAndAdd(new Game(game, 5), 6, count);
+
+                // 7 x 6r
+                checkAndAdd(new Game(game, 6), 7, count);
+
+                // 6 x 7r
+                checkAndAdd(new Game(game, 7), 6, count);
+
+                // 3 x 8r
+                checkAndAdd(new Game(game, 8), 3, count);
+
+                // 1 x 9r
+                checkAndAdd(new Game(game, 9), 1, count);
+            }
+
+            var player1Wins = finishedGames.Where(c => c.Score[0] > c.Score[1]).Sum(d => d.Copies);
+            var player2Wins = finishedGames.Where(c => c.Score[0] < c.Score[1]).Sum(d => d.Copies);
+
+            Console.WriteLine($"Player 1 wins in {player1Wins} universes");
+            Console.WriteLine($"Player 2 wins in {player2Wins} universes");
+        }
+
         public override void FirstAnswer()
         {
             Console.WriteLine();
@@ -82,7 +157,46 @@ namespace AdventOfCode2021
 
         public override void SecondAnswer()
         {
-            Console.WriteLine(2);
+            Console.WriteLine();
+            QuantumGame();
+        }
+
+        public record Game
+        {
+            public int[] Position { get; set; }
+
+            public int[] Score { get; set; }
+
+            public int PlayerTurn { get; set; }
+
+            public long Copies { get; set; }
+
+            public Game(int[] position, int[] score, long copies)
+            {
+                Position = position;
+                Score = score;
+                Copies = copies;
+            }
+
+            public Game(Game game, int move)
+            {
+                Position = new int[] { game.Position[0], game.Position[1] };
+                Score = new int[] { game.Score[0], game.Score[1] };
+                Copies = game.Copies;
+                PlayerTurn = game.PlayerTurn;
+
+                Position[PlayerTurn] += move;
+                Position[PlayerTurn] = Position[PlayerTurn] % 10;
+
+                if (Position[PlayerTurn] == 0)
+                {
+                    Position[PlayerTurn] = 10;
+                }
+
+                Score[PlayerTurn] += Position[PlayerTurn];
+
+                PlayerTurn = PlayerTurn == 1 ? 0: 1;
+            }
         }
     }
 }
