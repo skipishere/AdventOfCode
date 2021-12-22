@@ -14,12 +14,9 @@ namespace AdventOfCode2021
 
             var day = new Day16(data);
 
-            Assert.AreEqual(1, day.packets.Count);
-
-            var packet = day.packets[0];
-            Assert.AreEqual(6, packet.Version);
-            Assert.AreEqual(4, packet.Type);
-            Assert.AreEqual(expected, packet.Value);
+            Assert.AreEqual(6, day.OuterPacket.Version);
+            Assert.AreEqual(4, day.OuterPacket.Type);
+            Assert.AreEqual(expected, day.OuterPacket.Value);
         }
 
         [TestMethod]
@@ -46,10 +43,8 @@ namespace AdventOfCode2021
 
             var day = new Day16(data);
 
-            Assert.AreEqual(4, day.packets.Count);
-
-            Assert.AreEqual(10, day.packets[1].Value);
-            Assert.AreEqual(20, day.packets[2].Value);
+            Assert.AreEqual(10, day.OuterPacket.Packets[0].Value);
+            Assert.AreEqual(20, day.OuterPacket.Packets[1].Value);
         }
 
         [TestMethod]
@@ -59,26 +54,41 @@ namespace AdventOfCode2021
 
             var day = new Day16(data);
 
-            Assert.AreEqual(4, day.packets.Count);
-
-            Assert.AreEqual(1, day.packets[1].Value);
-            Assert.AreEqual(2, day.packets[2].Value);
-            Assert.AreEqual(3, day.packets[3].Value);
+            Assert.AreEqual(1, day.OuterPacket.Packets[0].Value);
+            Assert.AreEqual(2, day.OuterPacket.Packets[1].Value);
+            Assert.AreEqual(3, day.OuterPacket.Packets[2].Value);
         }
 
         [TestMethod]
-        [DataRow("8A004A801A8002F478", 4, 16)]
-        [DataRow("620080001611562C8802118E34", 5, 12)]
-        [DataRow("C0015000016115A2E0802F182340", 5, 23)]
-        [DataRow("A0016C880162017C3686B18A3D4780", 7, 31)]
-        public void VersionSum(string input, int expectedPacketCount, int expectedSumVersion)
+        [DataRow("8A004A801A8002F478", 16)]
+        [DataRow("620080001611562C8802118E34", 12)]
+        [DataRow("C0015000016115A2E0802F182340", 23)]
+        [DataRow("A0016C880162017C3686B18A3D4780", 31)]
+        public void VersionSum(string input, int expectedSumVersion)
         {
             var data = new List<string> { input };
 
             var day = new Day16(data);
 
-            //Assert.AreEqual(expectedPacketCount, day.packets.Count);
-            Assert.AreEqual(expectedSumVersion, day.packets.Sum(c => c.Version));
+            Assert.AreEqual(expectedSumVersion, day.OuterPacket.VersionSum());
+        }
+
+        [TestMethod]
+        [DataRow("C200B40A82", 3)]
+        [DataRow("04005AC33890", 54)]
+        [DataRow("880086C3E88112", 7)]
+        [DataRow("CE00C43D881120", 9)]
+        [DataRow("D8005AC2A8F0", 1)]
+        [DataRow("F600BC2D8F", 0)]
+        [DataRow("9C005AC2F8F0", 0)]
+        [DataRow("9C0141080250320F1802104A08", 1)]
+        public void Value(string input, int expectedValue)
+        {
+            var data = new List<string> { input };
+
+            var day = new Day16(data);
+
+            Assert.AreEqual(expectedValue, day.OuterPacket.Value);
         }
     }
 }

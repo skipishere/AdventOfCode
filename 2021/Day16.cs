@@ -7,32 +7,26 @@ namespace AdventOfCode2021
     {
         public override string Name => "Day 16: Packet Decoder";
 
-        public List<Packet> packets = new();
+        public readonly Packet OuterPacket;
 
+        /// <summary>
+        /// Constructor for Runner.
+        /// </summary>
         public Day16()
         {
-            try
-            {
-                Read(InputString());
-            }
-            catch
-            {
-            }
+            OuterPacket = Read(InputString());
         }
 
+        /// <summary>
+        /// Constructor for testing.
+        /// </summary>
+        /// <param name="input"></param>
         public Day16(IEnumerable<string> input)
         {
-            try
-            {
-                this.Read(input);
-            }
-            catch
-            {
-                // It's ok, some tests will hit the out of bounds issue due to the test cases given.
-            }
+            OuterPacket = Read(input);
         }
 
-        private void Read(IEnumerable<string> input)
+        private Packet Read(IEnumerable<string> input)
         {
             var binaryBuilder = new StringBuilder(input.Count() * 4);
             foreach (var character in input.First())
@@ -43,47 +37,59 @@ namespace AdventOfCode2021
             }
 
             var start = 0;
-            PacketRead(binaryBuilder, ref start, binaryBuilder.Length);
+            return PacketRead(binaryBuilder, ref start, binaryBuilder.Length).First();
         }
 
-        public void PacketRead(StringBuilder binaryBuilder, ref int readPosition, int end)
+        public List<Packet> PacketRead(StringBuilder binaryBuilder, ref int readPosition, int end)
         {
-            while(readPosition < end)
+            var result = new List<Packet>();
+            try
             {
-                var version = Convert.ToInt32(binaryBuilder.ToString(readPosition, 3), 2);
-                var type = Convert.ToInt32(binaryBuilder.ToString(readPosition + 3, 3), 2);
+                while(readPosition < end)
+                {
+                    var version = Convert.ToInt32(binaryBuilder.ToString(readPosition, 3), 2);
+                    var type = Convert.ToInt32(binaryBuilder.ToString(readPosition + 3, 3), 2);
                 
-                readPosition += 6;
-
-                if (type == 4)
-                {
-                    packets.Add(GetLiteral(binaryBuilder, version, ref readPosition));
-                }
-                else
-                {
-                    var lengthTypeId = binaryBuilder.ToString(readPosition, 1);
-                    readPosition += 1;
-                    packets.Add(new Packet(version, type, string.Empty));
-
-                    if (lengthTypeId == "0")
+                    readPosition += 6;
+                
+                    if (type == 4)
                     {
-                        var dataLength = Convert.ToInt32(binaryBuilder.ToString(readPosition, 15), 2);
-                        readPosition += 15;
-                        
-                        PacketRead(binaryBuilder, ref readPosition, readPosition+dataLength);
+                        result.Add(GetLiteral(binaryBuilder, version, ref readPosition));
                     }
                     else
                     {
-                        var subPackets = Convert.ToInt32(binaryBuilder.ToString(readPosition, 11), 2);
-                        readPosition+=11;
+                        var lengthTypeId = binaryBuilder.ToString(readPosition, 1);
+                        readPosition += 1;
+                        var calculation = new Packet(version, type);
 
-                        for (int i = 0; i < subPackets; i++)
+                        if (lengthTypeId == "0")
                         {
-                            PacketRead(binaryBuilder, ref readPosition, readPosition + 1);
+                            var dataLength = Convert.ToInt32(binaryBuilder.ToString(readPosition, 15), 2);
+                            readPosition += 15;
+
+                            calculation.Packets = PacketRead(binaryBuilder, ref readPosition, readPosition + dataLength);
                         }
+                        else
+                        {
+                            var subPackets = Convert.ToInt32(binaryBuilder.ToString(readPosition, 11), 2);
+                            readPosition+=11;
+
+                            for (int i = 0; i < subPackets; i++)
+                            {
+                                calculation.Packets.Add(PacketRead(binaryBuilder, ref readPosition, readPosition + 1).First());
+                            }
+                        }
+
+                        result.Add(calculation);
                     }
                 }
             }
+            catch
+            {
+                // Excess bit padding, so fall out.
+            }
+
+            return result;
         }
 
         public static Packet GetLiteral(StringBuilder binaryBuilder, int version, ref int position)
@@ -103,12 +109,12 @@ namespace AdventOfCode2021
        
         public override void FirstAnswer()
         {
-            Console.WriteLine(packets.Sum(c=> c.Version));
+            Console.WriteLine(OuterPacket.VersionSum());
         }
 
         public override void SecondAnswer()
         {
-            Console.WriteLine(2);
+            Console.WriteLine(OuterPacket.Value);
         }
 
         internal class Packet
@@ -117,23 +123,44 @@ namespace AdventOfCode2021
 
             public int Type { get; private set; }
 
-            public long Value { get; private set; }
+            private readonly long _value;
 
-            public Packet(int version, int type, string data)
+            public long Value 
+            {
+                get
+                {
+                    return Type switch
+                    {
+                        0 => Packets.Sum(c => c.Value),
+                        1 => Packets.Aggregate((long)1, (x, y) => x * y.Value),
+                        2 => Packets.Min(c => c.Value),
+                        3 => Packets.Max(c => c.Value),
+                        4 => _value,
+                        5 => Packets[0].Value > Packets[1].Value ? 1 : 0,
+                        6 => Packets[0].Value < Packets[1].Value ? 1 : 0,
+                        7 => Packets[0].Value == Packets[1].Value ? 1 : 0,
+                        _ => throw new ArgumentOutOfRangeException(nameof(Type)),
+                    };
+                }
+            }
+
+            public List<Packet> Packets { get; set; } = new();
+
+            public Packet(int version, int type, string data = "")
             {
                 this.Version = version;
                 this.Type = type;
 
                 if (this.Type == 4)
                 {
-                    Value = Convert.ToInt64(data, 2);
-                }else if (data.Length == 15)
-                {
-                    var value1 = Convert.ToInt32(data.Substring(0, 11), 2);
-                    var value2 = Convert.ToInt32(data.Substring(11, 16), 2);
+                    // type 4 literal
+                    _value = Convert.ToInt64(data, 2);
                 }
-                // type 4 literal
-                // case else do more magic
+            }
+
+            public int VersionSum()
+            {
+                return this.Version + Packets.Sum(c => c.VersionSum());
             }
         }
     }
