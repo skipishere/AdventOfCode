@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode2021
 {
-    internal class Day24 : Day
+    internal record Day24 : Day
     {
         public override string Name => "Day 24: Arithmetic Logic Unit";
 

@@ -2,7 +2,7 @@
 
 namespace AdventOfCode2021
 {
-    internal class Day12 : Day
+    internal record Day12 : Day
     {
         public override string Name => "Day 12: Passage Pathing";
 

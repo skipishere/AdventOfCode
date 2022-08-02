@@ -3,7 +3,7 @@ using System.Text;
 
 namespace AdventOfCode2021
 {
-    internal class Day16 : Day
+    internal record Day16 : Day
     {
         public override string Name => "Day 16: Packet Decoder";
 

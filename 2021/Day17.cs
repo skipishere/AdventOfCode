@@ -2,7 +2,7 @@
 
 namespace AdventOfCode2021
 {
-    internal class Day17 : Day
+    internal record Day17 : Day
     {
         public override string Name => "Day 17: Trick Shot";
 

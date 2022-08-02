@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode2021
 {
-    internal abstract class Day
+    internal abstract record Day
     {
         public abstract string Name { get; }
 
