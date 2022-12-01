@@ -4,51 +4,37 @@
     {
         public override string Name => "Day 1: Calorie Counting";
 
-        private readonly List<Elf> elves = new();
+        private readonly List<int> elves = new();
 
         public Day01()
         {
-            elves.Add(new Elf());
-
+            var elfCalories = 0;
             foreach (var calorie in InputString())
             {
                 if (calorie == string.Empty)
                 {
-                    elves.Insert(0, new Elf());
+                    elves.Add(elfCalories);
+                    elfCalories = 0; 
                 }
                 else
                 {
-                    elves.First().Add(calorie);
+                    elfCalories += int.Parse(calorie);
                 }
             }
         }
 
-        public override void FirstAnswer()
+        public override string FirstAnswer()
         {
-            Console.WriteLine(elves.Max(c => c.TotalCalories));
+            return elves.Max().ToString();
         }
 
-        public override void SecondAnswer()
+        public override string SecondAnswer()
         {
-            var total = elves
-                .OrderByDescending(c => c.TotalCalories)
+            return elves
+                .OrderByDescending(c => c)
                 .Take(3)
-                .Sum(c => c.TotalCalories);
-
-            Console.WriteLine(total);
-        }
-
-        private record Elf
-        {
-            public List<int> Calories = new();
-
-            public int TotalCalories => this.Calories.Sum();
-
-            public void Add(string calorie)
-            {
-                Calories.Add(int.Parse(calorie));
-            }
+                .Sum()
+                .ToString();
         }
     }
-
 }
