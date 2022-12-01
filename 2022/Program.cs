@@ -23,7 +23,7 @@ namespace AdventOfCode2022
                     var timer = new Stopwatch();
                     Console.WriteLine($"{makeMyDay.Name} Part {partNumber}");
                     timer.Start();
-                    puzzle.DynamicInvoke();
+                    Console.WriteLine(puzzle.DynamicInvoke());
                     timer.Stop();
                     Console.WriteLine(@$"Time to solve: {timer.Elapsed:g}");
                     Console.WriteLine(@$"Time to solve: {timer.ElapsedMilliseconds}ms");
@@ -33,7 +33,7 @@ namespace AdventOfCode2022
 
                 var overall = new Stopwatch();
                 overall.Start();
-                runWithTimer(() => makeMyDay.FirstAnswer(), "One");                
+                runWithTimer(() => makeMyDay.FirstAnswer(), "One");
                 runWithTimer(() => makeMyDay.SecondAnswer(), "Two");
                 overall.Stop();
 

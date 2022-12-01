@@ -4,8 +4,8 @@
     {
         public abstract string Name { get; }
 
-        public abstract void FirstAnswer();
-        public abstract void SecondAnswer();
+        public abstract string FirstAnswer();
+        public abstract string SecondAnswer();
 
         internal IEnumerable<string> InputString() => File.ReadLines($@"inputs\{GetType().Name}.txt");
 
