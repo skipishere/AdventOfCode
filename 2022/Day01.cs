@@ -4,26 +4,23 @@
     {
         public override string Name => "Day 1: Calorie Counting";
 
-        private List<Elf> elves = new();
+        private readonly List<Elf> elves = new();
 
         public Day01()
         {
-            var currentElf = new Elf();
-            
+            elves.Add(new Elf());
+
             foreach (var calorie in InputString())
             {
                 if (calorie == string.Empty)
                 {
-                    elves.Add(currentElf);
-                    currentElf = new Elf();
+                    elves.Insert(0, new Elf());
                 }
                 else
                 {
-                    currentElf.Add(calorie);
+                    elves.First().Add(calorie);
                 }
             }
-
-            elves.Add(currentElf);
         }
 
         public override void FirstAnswer()
