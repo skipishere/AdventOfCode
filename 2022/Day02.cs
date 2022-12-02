@@ -3,7 +3,6 @@
     internal record Day02 : Day
     {
         public override string Name => "Day 2: Rock Paper Scissors";
-
         private readonly Dictionary<string, Game> gameSets = new();
 
         public Day02()
@@ -21,21 +20,21 @@
             }
         }
 
-        public override string FirstAnswer()
+        public override object FirstAnswer()
         {
-            return gameSets.Sum(c => c.Value.Score() * c.Value.Copies).ToString();
+            return gameSets.Sum(c => c.Value.Score() * c.Value.Copies);
         }
 
-        public override string SecondAnswer()
+        public override object SecondAnswer()
         {
-            return gameSets.Sum(c => c.Value.Score(true) * c.Value.Copies).ToString();
+            return gameSets.Sum(c => c.Value.Score(true) * c.Value.Copies);
         }
 
         private record Game
         {
             private readonly RPS _elfHand;
             private readonly RPS _partOneHand;
-            private Result _result;
+            private readonly Result _result;
 
             public enum RPS
             {
@@ -79,7 +78,7 @@
             
             public int Score(bool alterHand = false)
             {
-                var myHand = _partOneHand;
+                RPS myHand = 0;
 
                 if (alterHand)
                 {
@@ -106,8 +105,12 @@
                             break;
                     }
                 }
+                else
+                {
+                    myHand = _partOneHand;
+                }
 
-                var handScore = (int)(myHand);
+                var handScore = (int)myHand;
                 if (myHand == _elfHand)
                 {
                     return handScore + 3;

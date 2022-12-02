@@ -4,12 +4,12 @@
     {
         public abstract string Name { get; }
 
-        public abstract string FirstAnswer();
-        public abstract string SecondAnswer();
+        public abstract object FirstAnswer();
+        public abstract object SecondAnswer();
 
         internal IEnumerable<string> InputString() => File.ReadLines($@"inputs\{GetType().Name}.txt");
 
-        internal IEnumerable<int> InputInt() => this.InputString().Select(c => int.Parse(c));
+        internal IEnumerable<int> InputInt() => this.InputString().Select(int.Parse);
 
         //TODO Add in ability to load in input with mapping ("string int" etc)
         //TODO Get input directly from website url 

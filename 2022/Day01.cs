@@ -23,18 +23,17 @@
             }
         }
 
-        public override string FirstAnswer()
+        public override object FirstAnswer()
         {
-            return elves.Max().ToString();
+            return elves.Max();
         }
 
-        public override string SecondAnswer()
+        public override object SecondAnswer()
         {
             return elves
                 .OrderByDescending(c => c)
                 .Take(3)
-                .Sum()
-                .ToString();
+                .Sum();
         }
     }
 }
