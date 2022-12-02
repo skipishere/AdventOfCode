@@ -1,39 +1,38 @@
-﻿namespace AdventOfCode2022
+﻿namespace AdventOfCode2022;
+
+internal record Day01 : Day
 {
-    internal record Day01 : Day
+    public override string Name => "Day 1: Calorie Counting";
+
+    private readonly List<int> elves = new();
+
+    public Day01()
     {
-        public override string Name => "Day 1: Calorie Counting";
-
-        private readonly List<int> elves = new();
-
-        public Day01()
+        var elfCalories = 0;
+        foreach (var calorie in InputString())
         {
-            var elfCalories = 0;
-            foreach (var calorie in InputString())
+            if (calorie == string.Empty)
             {
-                if (calorie == string.Empty)
-                {
-                    elves.Add(elfCalories);
-                    elfCalories = 0; 
-                }
-                else
-                {
-                    elfCalories += int.Parse(calorie);
-                }
+                elves.Add(elfCalories);
+                elfCalories = 0; 
+            }
+            else
+            {
+                elfCalories += int.Parse(calorie);
             }
         }
+    }
 
-        public override object FirstAnswer()
-        {
-            return elves.Max();
-        }
+    public override object FirstAnswer()
+    {
+        return elves.Max();
+    }
 
-        public override object SecondAnswer()
-        {
-            return elves
-                .OrderByDescending(c => c)
-                .Take(3)
-                .Sum();
-        }
+    public override object SecondAnswer()
+    {
+        return elves
+            .OrderByDescending(c => c)
+            .Take(3)
+            .Sum();
     }
 }
