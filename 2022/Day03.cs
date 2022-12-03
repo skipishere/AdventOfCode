@@ -8,7 +8,7 @@ internal record Day03 : Day
     public override string Name => "Day 3: ";
 
     private List<Bag> _bags = new();
-
+    
     public Day03()
     {
         foreach (var item in InputString())
@@ -24,16 +24,43 @@ internal record Day03 : Day
 
     public override object SecondAnswer()
     {
-        return "";
+        var priority = 0;
+
+        for (int i = 0; i < _bags.Count(); i += 3)
+        {
+            var common = _bags[i].Contents
+                .Intersect(_bags[i+1].Contents)
+                .Intersect(_bags[i+2].Contents)
+                .FirstOrDefault();
+
+            priority += CalculateValue(common);
+        }
+
+        return priority;
+    }
+
+    private static int CalculateValue(char character)
+    {
+        var value = (short)character;
+        if (char.IsUpper(character))
+        {
+            // A = 27, Z = 52
+            return value - 64 + 26;
+        }
+
+        // a = 1, z = 26
+        return value - 96;
     }
 
     private record Bag
     {
-        private char[] _compartmentOne;
-        private char[] _compartmentTwo;
+        private readonly char[] _compartmentOne;
+        private readonly char[] _compartmentTwo;
+        public string Contents { get; private set; }
 
         public Bag(string input)
         {
+            this.Contents = input;
             var split = input.Length / 2;
             _compartmentOne = input[..(split)].ToCharArray();
             _compartmentTwo = input[split..].ToCharArray();
@@ -43,19 +70,6 @@ internal record Day03 : Day
         {
             var character = _compartmentOne.Intersect(_compartmentTwo).FirstOrDefault();
             return CalculateValue(character);
-        }
-
-        private int CalculateValue(char character)
-        {
-            var value = (short)character;
-            if (char.IsUpper(character))
-            {
-                // A = 27, Z = 52
-                return value - 64 + 26;
-            }
-
-            // a = 1, z = 26
-            return value - 96;
         }
     }
 }
