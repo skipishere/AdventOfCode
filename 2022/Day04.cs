@@ -17,13 +17,7 @@ internal record Day04 : Day
 
     public override object FirstAnswer()
     {
-        //_pairs.Count(c => c.Item1.Within(c.Item2));
-        var sets =
-            _pairs.Count(c =>
-                c.Item1.Start >= c.Item2.Start && c.Item1.Finish <= c.Item2.Finish
-                || c.Item2.Start >= c.Item1.Start && c.Item2.Finish <= c.Item1.Finish);
-        
-        return sets;
+        return _pairs.Count(c => c.Item1.Within(c.Item2));
     }
 
     public override object SecondAnswer()
@@ -35,19 +29,18 @@ internal record Day04 : Day
     {
         public int Start { get; set; }
         public int Finish { get; set; }
-        public int Length { get; private set; }
 
         public Job(string input)
         {
             var split = input.Split("-");
             Start = int.Parse(split[0]);
             Finish = int.Parse(split[1]);
-            Length = Finish - Start;
         }
 
         public bool Within(Job otherJob)
         {
-            return false;
+            return otherJob.Start >= Start && otherJob.Finish <= Finish
+                || Start >= otherJob.Start && Finish <= otherJob.Finish;
         }
 
         public bool Intersec(Job otherJob)
