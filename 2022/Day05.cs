@@ -9,7 +9,7 @@ internal partial record Day05 : Day
     [GeneratedRegex("move (?<quantity>\\d+) from (?<from>\\d) to (?<to>\\d)")]
     private static partial Regex InstructionParse();
 
-    private List<Stack<char>> _containers = new();
+    private List<Stack<char>> _containers = new(8);
     private List<Instruction> _instructions = new();
 
     public Day05()
@@ -44,7 +44,7 @@ internal partial record Day05 : Day
 
     public override object FirstAnswer()
     {
-        return "";// Move();
+        return Move();
     }
 
     public override object SecondAnswer()
@@ -54,8 +54,7 @@ internal partial record Day05 : Day
 
     private string Move()
     {
-        // not a real clone agh!
-        var localContainer = new List<Stack<char>>(_containers);
+        var localContainer = _containers.ConvertAll(s => new Stack<char>(s.Reverse().ToArray()));
         
         foreach (var instruction in _instructions)
         {
@@ -70,8 +69,7 @@ internal partial record Day05 : Day
 
     private string MoveCrateMover9001()
     {
-        // not a real clone agh!
-        var localContainer = new List<Stack<char>>(_containers);
+        var localContainer = _containers.ConvertAll(s => new Stack<char>(s.Reverse().ToArray()));
 
         foreach (var instruction in _instructions)
         {
