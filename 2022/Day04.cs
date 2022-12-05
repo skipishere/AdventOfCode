@@ -2,7 +2,7 @@
 
 internal record Day04 : Day
 {
-    public override string Name => "Day 2: Camp Cleanup";
+    public override string Name => "Day 4: Camp Cleanup";
 
     private readonly List<Tuple<Job, Job>> _pairs = new();
 

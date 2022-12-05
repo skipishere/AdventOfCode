@@ -2,7 +2,7 @@
 
 internal record Day03 : Day
 {
-    public override string Name => "Day 3: ";
+    public override string Name => "Day 3: Rucksack Reorganization";
 
     private readonly List<string> _bags;
     
