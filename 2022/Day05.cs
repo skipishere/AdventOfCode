@@ -4,13 +4,13 @@ namespace AdventOfCode2022;
 
 internal partial record Day05 : Day
 {
-    public override string Name => "Day 5: Camp Cleanup";
+    public override string Name => "Day 5: Supply Stacks";
 
     [GeneratedRegex("move (?<quantity>\\d+) from (?<from>\\d) to (?<to>\\d)")]
     private static partial Regex InstructionParse();
 
-    private List<Stack<char>> _containers = new(8);
-    private List<Instruction> _instructions = new();
+    private readonly List<Stack<char>> _containers = new(8);
+    private readonly List<Instruction> _instructions = new();
 
     public Day05()
     {
@@ -49,42 +49,36 @@ internal partial record Day05 : Day
 
     public override object SecondAnswer()
     {        
-        return MoveCrateMover9001();
+        return Move(true);
     }
 
-    private string Move()
+    private string Move(bool crateMover9001 = false)
     {
-        var localContainer = _containers.ConvertAll(s => new Stack<char>(s.Reverse().ToArray()));
-        
-        foreach (var instruction in _instructions)
-        {
-            for (int i = 0; i < instruction.Quantity; i++)
-            {
-                localContainer[instruction.To-1].Push(localContainer[instruction.From-1].Pop());
-            }
-        }
-
-        return string.Join("", localContainer.Select(c => c.Peek()));
-    }
-
-    private string MoveCrateMover9001()
-    {
-        var localContainer = _containers.ConvertAll(s => new Stack<char>(s.Reverse().ToArray()));
+        var localContainers = _containers.ConvertAll(s => new Stack<char>(s.Reverse().ToArray()));
 
         foreach (var instruction in _instructions)
         {
-            var stash = new Stack<char>();
+            var stash = new Stack<char>(instruction.Quantity - 1);
             for (int i = 0; i < instruction.Quantity; i++)
             {
-                stash.Push(localContainer[instruction.From - 1].Pop());
+                var crate = localContainers[instruction.From].Pop();
+                if (crateMover9001)
+                {
+                    stash.Push(crate);
+                }
+                else
+                {
+                    localContainers[instruction.To].Push(crate);
+                }
             }
+
             while (stash.Any())
             {
-                localContainer[instruction.To - 1].Push(stash.Pop());
+                localContainers[instruction.To].Push(stash.Pop());
             }
         }
 
-        return string.Join("", localContainer.Select(c => c.Peek()));
+        return string.Join("", localContainers.Select(c => c.Peek()));
     }
 
     private record Instruction
@@ -99,8 +93,8 @@ internal partial record Day05 : Day
             int GetAndParse(string group) => int.Parse(data!.Groups[group].Value);
 
             Quantity = GetAndParse("quantity");
-            From = GetAndParse("from");
-            To = GetAndParse("to");
+            From = GetAndParse("from") - 1;
+            To = GetAndParse("to") - 1;
         }
     }
 }
