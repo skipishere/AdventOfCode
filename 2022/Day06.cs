@@ -21,12 +21,17 @@ internal partial record Day06 : Day
         return Unique(14);
     }
 
-    private int Unique(int uniquelength)
+    private int Unique(int length)
     {
-        for (int i = uniquelength-1; i < _signal.Length; i++)
+        for (int i = length - 1; i < _signal.Length; i++)
         {
-            var block = _signal.Skip(i - uniquelength+1).Take(uniquelength).Distinct().Count();
-            if (block == uniquelength)
+            var unique = _signal
+                .Skip(i - length + 1)
+                .Take(length)
+                .Distinct()
+                .Count() == length;
+
+            if (unique)
             {
                 return i + 1;
             }
