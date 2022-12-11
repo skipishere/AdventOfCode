@@ -1,25 +1,28 @@
-﻿namespace AdventOfCode2022;
+﻿using System.Collections.Generic;
+using System.Text;
+
+namespace AdventOfCode2022;
 
 internal partial record Day10 : Day
 {
     public override string Name => "Day 10: Cathode-Ray Tube";
 
-    private List<int?> _addValue = new();
+    private readonly List<int?> _instruction = new();
 
     public Day10()
     {
-        foreach (var instuction in InputString())
+        foreach (var input in InputString())
         {
-            var current = instuction.Split(' ');
+            var current = input.Split(' ');
 
             if (current[0] == "noop")
             {
-                _addValue.Add(null);
+                _instruction.Add(null);
             }
             else
             {
-                _addValue.Add(null);
-                _addValue.Add(int.Parse(current[1]));
+                _instruction.Add(null);
+                _instruction.Add(int.Parse(current[1]));
             }
         }
     }
@@ -30,7 +33,7 @@ internal partial record Day10 : Day
         var x = 1;
         var cycle = 0;
 
-        foreach (var instuction in _addValue) 
+        foreach (var instuction in _instruction) 
         {
             cycle++;
             if ((cycle + 20) % 40 == 0)
@@ -50,14 +53,36 @@ internal partial record Day10 : Day
 
     public override object SecondAnswer()
     {
-        return "";
-    }
+        var x = 1;
+        var currentPosition = 0;
 
-    private record Instruction
-    {
-        public Instruction(string input)
+        foreach (var instuction in _instruction)
         {
+            if (currentPosition == 40)
+            {
+                currentPosition = 0;
+                Console.WriteLine();
+            }
 
+            if (currentPosition >= x - 1 && currentPosition <= x + 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("▓");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(".");
+            }
+
+            if (instuction.HasValue)
+            {
+                x += instuction.Value;
+            }
+
+            currentPosition++;
         }
+
+        return "";
     }
 }
