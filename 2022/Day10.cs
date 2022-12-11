@@ -15,13 +15,9 @@ internal partial record Day10 : Day
         {
             var current = input.Split(' ');
 
-            if (current[0] == "noop")
+            _instruction.Add(null);
+            if (current.Length > 1)
             {
-                _instruction.Add(null);
-            }
-            else
-            {
-                _instruction.Add(null);
                 _instruction.Add(int.Parse(current[1]));
             }
         }
@@ -38,14 +34,10 @@ internal partial record Day10 : Day
             cycle++;
             if ((cycle + 20) % 40 == 0)
             {
-                Console.WriteLine($"Cycle {cycle} - Value {cycle * x}");
                 result += cycle * x;
             }
 
-            if (instuction.HasValue)
-            {
-                x += instuction.Value;
-            }
+            x += instuction ?? 0;
         }
         
         return result;
@@ -75,11 +67,7 @@ internal partial record Day10 : Day
                 Console.Write(".");
             }
 
-            if (instuction.HasValue)
-            {
-                x += instuction.Value;
-            }
-
+            x += instuction ?? 0;
             currentPosition++;
         }
 
