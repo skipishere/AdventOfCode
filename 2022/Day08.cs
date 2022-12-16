@@ -27,17 +27,17 @@ internal partial record Day08 : Day
 
         for (int row = 0; row < _height; row++)
         {
-            ViewLeft(visible, row);
-            ViewRight(visible, row);
+            ViewLeft(visible, row, 0);
+            ViewRight(visible, row, _width - 1);
         }
 
         for (int col = 0; col < _width; col++)
         {
-            ViewDown(visible, col);
-            ViewUp(visible, col);
+            ViewDown(visible, col, 0);
+            ViewUp(visible, col, _height - 1);
         }
 
-        return visible.Count();
+        return visible.Count;
     }
 
     public override object SecondAnswer()
@@ -72,7 +72,7 @@ internal partial record Day08 : Day
 
             sceneScore++;
         }
-        if (sceneScore == 0) { return sceneScore; }
+        if (sceneScore == 0) { return 0; }
 
         // look down
         for (var row = treeRow + 1; row > 0; row++)
@@ -85,35 +85,30 @@ internal partial record Day08 : Day
 
             sceneScore++;
         }
-        if (sceneScore == 0) { return sceneScore; }
+        if (sceneScore == 0) { return 0; }
 
         return 0;
     }
 
     private int Location(int row, int col) => row * _width + col;
 
-    private void ViewLeft(HashSet<int> visible, int row)
+    private void ViewLeft(HashSet<int> visible, int row, int startCol)
     {
-        var lastHeight = -1;
-        for (int col = 0; col < _width; col++)
-        {
-            var location = row * _width + col;
-            if (lastHeight == 9) { break; }
-            if (_treeMap[location] > lastHeight) 
-            {
-                lastHeight = _treeMap[location];
-                visible.Add(location);
-            }
-        }
+        ViewHorizontal(visible, row, startCol, col => col < _width, 1);
     }
 
-    private void ViewRight(HashSet<int> visible, int row)
+    private void ViewRight(HashSet<int> visible, int row, int startCol)
+    {
+        ViewHorizontal(visible, row, startCol, col => col >= 0, -1);
+    }
+
+    private void ViewHorizontal(HashSet<int> visible, int row, int startCol, Func<int, bool> loopCheck, int direction)
     {
         var lastHeight = -1;
-        for (int col = _width-1; col >= 0; col--)
+        for (int col = startCol; loopCheck(col); col+=direction)
         {
-            var location = row * _width + col;
-            if (lastHeight == 9) { break; }
+            var location = Location(row, col);
+
             if (_treeMap[location] > lastHeight)
             {
                 lastHeight = _treeMap[location];
@@ -122,28 +117,23 @@ internal partial record Day08 : Day
         }
     }
 
-    private void ViewDown(HashSet<int> visible, int col)
+    private void ViewDown(HashSet<int> visible, int col, int startRow)
     {
-        var lastHeight = -1;
-        for (int row = 0; row < _height; row++)
-        {
-            var location = row * _width + col;
-            if (lastHeight == 9) { break; }
-            if (_treeMap[location] > lastHeight)
-            {
-                lastHeight = _treeMap[location];
-                visible.Add(location);
-            }
-        }
+        ViewVertical(visible, col, startRow, row => row < _height, 1);
     }
 
-    private void ViewUp(HashSet<int> visible, int col)
+    private void ViewUp(HashSet<int> visible, int col, int startRow)
+    {
+        ViewVertical(visible, col, startRow, row => row >= 0, -1);
+    }
+
+    private void ViewVertical(HashSet<int> visible, int col, int startRow, Func<int, bool> loopCheck, int direction)
     {
         var lastHeight = -1;
-        for (int row = _height-1; row >=0; row--)
+        for (var row = startRow; loopCheck(row); row+= direction)
         {
-            var location = row * _width + col;
-            if (lastHeight == 9) { break; }
+            var location = Location(row, col);
+            
             if (_treeMap[location] > lastHeight)
             {
                 lastHeight = _treeMap[location];
