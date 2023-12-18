@@ -68,7 +68,18 @@ internal record Day02 : Day
 
     public override object SecondAnswer()
     {
-        return null;
+        var result = 0;
+        
+        _input.GroupBy(c => c.Id).ToList().ForEach(g =>
+        {
+            var red = g.Max(c => c.Red);
+            var green = g.Max(c => c.Green);
+            var blue = g.Max(c => c.Blue);
+
+            result += red * green * blue;
+        });
+
+        return result;
     }
 
 }
